@@ -1,5 +1,5 @@
 # Battleship
-Battleship game using SDL2
+Battleship game using SDL2, made using Visual Studios
 
 ![alt text](https://github.com/cjmar/battleship/blob/master/Screenshots/titlescreen.gif)
 
