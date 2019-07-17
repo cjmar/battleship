@@ -83,8 +83,8 @@ std::vector<Ship>& Player::getShips()
 }
 
 /*	Axis aligned bounding box
-	True = test on hitbox		32x32 grid hit
-	False = test on destrect	measured sprite hit
+	True = test on hitbox		measured sprite hit
+	False = test on destrect	32x32 box hit
 
 */
 bool Player::shipCollide(SDL_Rect rect1, int selected, bool useHitbox)
