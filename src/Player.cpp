@@ -83,8 +83,8 @@ std::vector<Ship>& Player::getShips()
 }
 
 /*	Axis aligned bounding box
-	True = test on hitbox
-	False = test on destrect
+	True = test on hitbox		32x32 grid hit
+	False = test on destrect	measured sprite hit
 
 */
 bool Player::shipCollide(SDL_Rect rect1, int selected, bool useHitbox)
@@ -138,6 +138,6 @@ bool Player::shipCollide(int selected, bool useHitbox)
 
 bool Player::shipsStillAlive()
 {
-	if (shipsHitNum == 17) return false;
+	if (shipsHitNum >= 17) return false;
 	else return true;
 }
