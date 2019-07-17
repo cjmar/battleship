@@ -310,6 +310,6 @@ void AIPlayer::devRender(bool showShips, bool showMarks)
 
 bool AIPlayer::shipsStillAlive()
 {
-	if (shipsHitNum == 17) return false;
+	if (shipsHitNum >= 17) return false;
 	else return true;
 }
