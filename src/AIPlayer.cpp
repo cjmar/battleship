@@ -131,8 +131,8 @@ bool AIPlayer::shipCollision(Ship &s1, Ship &s2)
 }
 
 /*
-	Currently based purely on RNG
-	Eventually group the shots around hits 
+	Randomly selects areas that have not been targeted to test for hits
+	Groups shots around a target hit
 */
 std::vector<SDL_Rect> AIPlayer::generateAttackCoords(int rNum)
 {
