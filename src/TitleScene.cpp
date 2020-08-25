@@ -192,9 +192,6 @@ void TitleScene::render()
 	//Github info 
 	TextureManager::DrawText("https://github.com/cjmar/battleship", Battleship::BLACK, 14 * 32 + 1, 12 * 32 + 1, 0.45);
 
-	//Artist credit
-	TextureManager::DrawText("Art © 2019 Ethan Naranjo", Battleship::BLACK, 14 * 32 + 1, 12 * 32 + 16 + 2, 0.45);
-
 }
 
 void TitleScene::mouseDown(int, int, int) 
