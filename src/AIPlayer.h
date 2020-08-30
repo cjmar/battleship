@@ -25,6 +25,8 @@ private:
 
 	int shipsHitNum; //16 hits means all ships are sunk
 
+	bool checkCardinalSurroundedHits(int&, int&);
+
 	bool hitCoordCheck(int, int);
 	std::vector<Ship> aiShips; //Just need the destRect from these
 	std::vector<SDL_Rect> blackX; //devRender uses this to draw a large X over the ai ships

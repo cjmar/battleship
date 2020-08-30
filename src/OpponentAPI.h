@@ -26,7 +26,6 @@ public:
 	OpponentAPI();
 	~OpponentAPI();
 
-	void init();
 	//void sendAttackCoords(std::vector<SDL_Rect>);
 	void sendHitCoords(std::vector<SDL_Rect>);
 	std::vector<SDL_Rect> checkForHits(std::vector<SDL_Rect>);

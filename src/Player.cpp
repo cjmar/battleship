@@ -2,6 +2,7 @@
 #include "TextureManager.h"
 #include <iostream>
 #include "Game.h"
+#include "Hitbox.h"
 
 Player::Player()
 {
@@ -62,7 +63,7 @@ std::vector<SDL_Rect> Player::checkForHits(std::vector<SDL_Rect> hits_in)
 		{
 			SDL_Rect r2 = s.getDest();
 
-			if (Battleship::Game::rectCollide(r, r2)) //One of the guesses was a hit
+			if (Hitbox::rectCollide(r, r2)) //One of the guesses was a hit
 			{
 				hits.push_back(r);
 				shipsHitNum++;
@@ -83,8 +84,8 @@ std::vector<Ship>& Player::getShips()
 }
 
 /*	Axis aligned bounding box
-	True = test on hitbox		measured sprite hit
-	False = test on destrect	32x32 box hit
+	True = test on hitbox
+	False = test on destrect
 
 */
 bool Player::shipCollide(SDL_Rect rect1, int selected, bool useHitbox)
@@ -95,14 +96,22 @@ bool Player::shipCollide(SDL_Rect rect1, int selected, bool useHitbox)
 	{
 		if (i != selected)
 		{
+			
 			if (useHitbox) rect2 = playerShips.at(i).getHitbox();
 			else rect2 = playerShips.at(i).getDest();
 
+			/*
 			if (rect1.x < rect2.x + rect2.w &&
 				rect1.x + rect1.w > rect2.x &&
 				rect1.y < rect2.y + rect2.h &&
 				rect1.y + rect1.h > rect2.y)
 				collide = true;
+				*/
+
+			if (Hitbox::rectCollide(rect1, rect2))
+			{
+				collide = true;
+			}
 		}
 	}
 	return collide;
@@ -124,15 +133,20 @@ bool Player::shipCollide(int selected, bool useHitbox)
 			if (useHitbox) rect2 = playerShips.at(i).getHitbox();
 			else rect2 = playerShips.at(i).getDest();
 
+			/*
 			if (rect1.x < rect2.x + rect2.w &&
 				rect1.x + rect1.w > rect2.x &&
 				rect1.y < rect2.y + rect2.h &&
 				rect1.y + rect1.h > rect2.y)
 				collide = true;
+				*/
+			if (Hitbox::rectCollide(rect1, rect2))
+			{
+				collide = true;
+			}
 			collideNum = i;
 		}
 	}
-
 	return collide;
 }
 

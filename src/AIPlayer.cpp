@@ -3,11 +3,12 @@
 #include <time.h>
 #include <iostream>
 #include "Game.h"
+#include "Hitbox.h"
 
 AIPlayer::AIPlayer()
 {
 	shipsHitNum = 0;
-	srand(time(NULL));
+	srand(unsigned int(time(NULL)));
 
 	//sea area is a 15x15 grid. The y is scaled to not include the topmost grid when seaArea is used
 	seaArea = { 0, 32, 15 * 32, 16 * 32 }; 
@@ -131,12 +132,12 @@ bool AIPlayer::shipCollision(Ship &s1, Ship &s2)
 }
 
 /*
-	Randomly selects areas that have not been targeted to test for hits
-	Groups shots around a target hit
+	Currently based purely on RNG
+	Eventually group the shots around hits 
 */
 std::vector<SDL_Rect> AIPlayer::generateAttackCoords(int rNum)
 {
-	std::vector<std::pair<int, int>> coordSet; //Vector holding 5 corrdinates to use on round
+	std::vector<std::pair<int, int>> coordSet; //Vector holding 5 corrdinates to use each round
 	std::vector<std::pair<int, int>> pairList; //Vector of all coordinates not used yet
 	int shotsFired = 0;
 
@@ -144,6 +145,7 @@ std::vector<SDL_Rect> AIPlayer::generateAttackCoords(int rNum)
 	for (int x = 0; x < WIDTH; x++)
 	for (int y = 0; y < HEIGHT; y++)
 	{
+		
 		int index = y + HEIGHT * x; //index of mastercoord
 		bool fired = false;
 		std::pair<int, int> coord = std::make_pair(x, y);
@@ -186,14 +188,22 @@ std::vector<SDL_Rect> AIPlayer::generateAttackCoords(int rNum)
 				masterAttackCoords.at(index) = true;
 				fired = true;
 			}
+			/*
+				Check to see if all cardinal directions arent already hit
+				Stops AI from firing into fully surrounded no hit tile
+			*/
+			else if (checkCardinalSurroundedHits(x, y))
+			{
+				//Nothing
+			}
 			//Else add the point to pairList for random selection
 			else if (!fired) //If this point has not been fired on yet
 			{
 				pairList.push_back(coord);
 			}
 		}
+		
 	}
-	
 	//Generate random indexes using the pairList vector
 	for (int i = shotsFired; i < 5; i++) //How many shots there are
 	{
@@ -236,12 +246,38 @@ std::vector<SDL_Rect> AIPlayer::generateAttackCoords(int rNum)
 	return convertedCoords;
 }
 
+bool AIPlayer::checkCardinalSurroundedHits(int &x, int &y)
+{
+	//Get cardinal direction indexes from mastercoord
+	int top = (y + 1) + HEIGHT * x; 
+	int left = y + HEIGHT * (x - 1); 
+	int right = y + HEIGHT * (x + 1);
+	int bottom = (y - 1) + HEIGHT * x;
+	std::vector<int> cardinals = { top, left, right, bottom };
+
+	bool surrounded = true;
+
+	//for each cardinal index, check to make sure it is in the play area
+	for (int index : cardinals)
+	{
+		if (index >= 0 && index < masterAttackCoords.size())
+		{
+			//if theres an open spot, its not surrounded
+			if (masterAttackCoords.at(index) == false)
+			{
+				surrounded = false;
+			}
+		}
+	}
+	return surrounded;
+}
+
 bool AIPlayer::hitCoordCheck(int x, int y)
 {
 	bool hit = false;
 	y++;
 	int index = y + HEIGHT * x;
-	bool inBounds = (index >= 0 && index < aiShipHits.size() - 1);
+	bool inBounds = (index >= 0 && index < int(aiShipHits.size()) - 1);
 	if (inBounds && aiShipHits.at(index)) //if this square was a hit
 	{
 		hit = true;
@@ -270,7 +306,7 @@ std::vector<SDL_Rect> AIPlayer::getHits(std::vector<SDL_Rect> hits_in)
 		for (Ship& s : aiShips)
 		{
 			SDL_Rect r2 = s.getDest();
-			if (Battleship::Game::rectCollide(r, r2)) //One of the guesses was a hit
+			if (Hitbox::rectCollide(r, r2)) //One of the guesses was a hit
 			{
 				hits.push_back(r);
 				shipsHitNum++;
@@ -310,6 +346,6 @@ void AIPlayer::devRender(bool showShips, bool showMarks)
 
 bool AIPlayer::shipsStillAlive()
 {
-	if (shipsHitNum >= 17) return false;
+	if (shipsHitNum == 17) return false;
 	else return true;
 }

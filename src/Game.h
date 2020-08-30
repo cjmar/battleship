@@ -9,14 +9,6 @@
 
 namespace Battleship
 {
-	namespace
-	{
-		SDL_Color RED = { 255, 0, 0 };
-		SDL_Color MANGO = { 240, 50, 50 };
-		SDL_Color BLACK = { 0, 0, 0 };
-		SDL_Color WHITE = { 255, 255, 255 };
-	}
-
 	class Game
 	{
 	public:
@@ -44,8 +36,6 @@ namespace Battleship
 		static SDL_Texture* spriteSheet;
 		static float gameScale;
 
-		static bool spriteCollide(Sprite &, Sprite &);
-		static bool rectCollide(SDL_Rect &, SDL_Rect &);
 		static void printRect(SDL_Rect &);
 
 		static int mouseX;

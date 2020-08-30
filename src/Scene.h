@@ -17,18 +17,6 @@ public:
 	virtual void mouseUp(int, int, int) = 0;
 	virtual void mouseMove(int, int) = 0;
 	virtual void init() = 0;
-
-	bool inHitBox(int x, int y, SDL_Rect box, float scaling)
-	{
-		bool isxHit = false;
-		bool isyHit = false;
-
-		if (x >= box.x * scaling && x < box.x * scaling + box.w * scaling) isxHit = true;
-		if (y >= box.y * scaling && y < box.y * scaling + box.h * scaling) isyHit = true;
-
-		return (isxHit && isyHit);
-	}
-
 };
 
 #endif
