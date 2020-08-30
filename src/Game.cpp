@@ -18,7 +18,11 @@ int Game::mouseY = 0;
 
 float Game::gameScale = 1.5;
 
-Game::Game() { window = nullptr; }
+Game::Game() 
+{ 
+	window = nullptr; 
+	frameNum = 0;
+}
 
 Game::~Game() {}
 
@@ -146,27 +150,6 @@ void Game::clean()
 void Game::changeScene(SceneManager::SceneType type_in)
 {
 	sceneManager.startScene(type_in);
-}
-
-//Dest rect collision
-bool Game::spriteCollide(Sprite &s1, Sprite &s2)
-{
-	return rectCollide(s1.destRect, s2.destRect);
-}
-
-//Dest rect collision
-bool Game::rectCollide(SDL_Rect& r1, SDL_Rect& r2)
-{
-	bool collide = false;
-
-	if (r1.x < r2.x + r2.w &&
-		r1.x + r1.w > r2.x &&
-		r1.y < r2.y + r2.h &&
-		r1.y + r1.h > r2.y)
-
-		collide = true;
-
-	return collide;
 }
 
 void Game::printRect(SDL_Rect& r)

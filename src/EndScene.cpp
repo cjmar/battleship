@@ -2,37 +2,40 @@
 #include "TextureManager.h"
 #include "Game.h"
 #include "SceneManager.h"
+#include "Hitbox.h"
+#include "Colors.h"
 
 EndScene::EndScene(int won_in)
 {
 	gameWon = won_in;
 	message = "Message not set";
-	
+	textScale = 1.5f;
+
 	switch (gameWon)
 	{
 		case 0:
 		message = " You won the game! ";
-		textScale = 1.8;
+		textScale = 1.8f;
 		break;
 
 		case 1:
 		message = " You lost the game! ";
-		textScale = 1.8;
+		textScale = 1.8f;
 		break;
 
 		case 2:
 		message = "The game was a draw!";
-		textScale = 1.6;
+		textScale = 1.6f;
 		break;
 	}
 
-	WIDTH = Battleship::Game::GAME_WIDTH / 32 / Battleship::Game::gameScale;
-	HEIGHT = Battleship::Game::GAME_HEIGHT / 32 / Battleship::Game::gameScale;
+	WIDTH = int(Battleship::Game::GAME_WIDTH / 32 / Battleship::Game::gameScale);
+	HEIGHT = int(Battleship::Game::GAME_HEIGHT / 32 / Battleship::Game::gameScale);
 
 	TextureManager::getSpriteSrc(TextureManager::Water, waterSprite);
 	TextureManager::getSpriteSrc(TextureManager::ButtonBGRed, redButton);
-	redButton.destRect.w *= 1.5;
-	redButton.destRect.h *= 1.5;
+	redButton.destRect.w = int(redButton.destRect.w *1.5);
+	redButton.destRect.h = int(redButton.destRect.h * 1.5);
 	redButton.destRect.y = 7 * 32;
 
 	playBox = exitBox = redButton.destRect;
@@ -78,18 +81,18 @@ void EndScene::render()
 
 	//Draw button background and game end text
 	drawUIBox(4*32, 4*32, 12, 6);
-	TextureManager::DrawText(message, Battleship::BLACK, 4*32 + 14, 4*32 + 16, textScale);
+	TextureManager::DrawText(message, Colors::BLACK, 4*32 + 14, 4*32 + 16, textScale);
 
 	//Draw play again button
 	redButton.destRect.x = playBox.x;
 	TextureManager::Draw(redButton);
-	TextureManager::DrawText("Play", Battleship::MANGO, playBox.x + 47, playBox.y + 8, 1.2);
-	TextureManager::DrawText("Again", Battleship::MANGO, playBox.x + 39, playBox.y + 32, 1.2);
+	TextureManager::DrawText("Play", Colors::MANGO, playBox.x + 47, playBox.y + 8, 1.2f);
+	TextureManager::DrawText("Again", Colors::MANGO, playBox.x + 39, playBox.y + 32, 1.2f);
 
 	//Draw exit button
 	redButton.destRect.x = exitBox.x;
 	TextureManager::Draw(redButton);
-	TextureManager::DrawText("Exit", Battleship::MANGO, exitBox.x + 38, exitBox.y + 12, 1.8);
+	TextureManager::DrawText("Exit", Colors::MANGO, exitBox.x + 38, exitBox.y + 12, 1.8f);
 }
 
 void EndScene::mouseDown(int x, int y , int button)
@@ -100,12 +103,12 @@ void EndScene::mouseDown(int x, int y , int button)
 void EndScene::mouseUp(int x, int y , int button)
 {
 	//Play again button
-	if (inHitBox(x, y, playBox, Battleship::Game::gameScale))
+	if (Hitbox::rectClickHit(x, y, playBox, Battleship::Game::gameScale))
 	{
 		SceneManager::getInstance()->startScene(SceneManager::TitleScreen);
 	}
 	//Exit game button
-	if (inHitBox(x, y, exitBox, Battleship::Game::gameScale))
+	if (Hitbox::rectClickHit(x, y, exitBox, Battleship::Game::gameScale))
 	{
 		Battleship::Game::quit();
 	}

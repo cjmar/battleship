@@ -6,9 +6,8 @@
 #include "Sprite.h"
 #include "SDL2/SDL_ttf.h"
 
-class TextureManager
+namespace TextureManager
 {
-public:
 	enum SpriteName
 	{
 		//Boats
@@ -57,11 +56,11 @@ public:
 		Size,
 	};
 
-	static void Draw(SDL_Rect &, SDL_Rect &);
-	static void Draw(Sprite &);
-	static void DrawText(const char*, SDL_Color &, int, int, float);
-	static void getSpriteSrc(SpriteName, Sprite &);
-	static SDL_Texture* loadTexture(const char*);
+	void Draw(SDL_Rect &, SDL_Rect &);
+	void Draw(Sprite &);
+	void DrawText(const char*, SDL_Color &, int, int, float);
+	void getSpriteSrc(SpriteName, Sprite &);
+	SDL_Texture* loadTexture(const char*);
 
 };
 

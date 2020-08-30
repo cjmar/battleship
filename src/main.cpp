@@ -32,6 +32,7 @@
 #include <Windows.h>
 #include "SDL2/SDL.h"
 #include "Game.h"
+#include <string>
 
 /*
 	15 cell x 15 cell board
@@ -51,14 +52,12 @@ int WINAPI WinMain(
 	_In_ int nCmdShow)
 #endif
 {
-	Battleship::Game* game = nullptr;
-
+	Battleship::Game game;
 	char title[] = "Battleship";
 	const int WINDOW_WIDTH = 960; 
 	const int WINDOW_HEIGHT = 768;
 
-	game = new Battleship::Game();
-	game->init(title, WINDOW_WIDTH, WINDOW_HEIGHT);
+	game.init(title, WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	//Framerate 
 	int fps = 60;
@@ -67,15 +66,15 @@ int WINAPI WinMain(
 	int frameTime;
 	unsigned int frameNum = 0;
 
-	while(game->isRunning())
+	while(game.isRunning())
 	{
 		//Start of frame
 		frameStart = SDL_GetTicks();
 		frameNum++;
 
-		game->eventHandler();
-		game->update(frameNum);
-		game->render();
+		game.eventHandler();
+		game.update(frameNum);
+		game.render();
 
 		//End of frame
 		frameTime = SDL_GetTicks() - frameStart;
@@ -85,10 +84,7 @@ int WINAPI WinMain(
 		}
 	}
 
-	game->clean();
-
-	game = nullptr;
-	delete game;
+	game.clean();
 
 	return 0;
 }

@@ -4,7 +4,6 @@
 #include "Scene.h"
 #include "Sprite.h"
 #include <vector>
-#include "SceneManager.h"
 #include "Ship.h"
 
 class TitleScene : public Scene

@@ -3,13 +3,6 @@
 
 OpponentAPI::OpponentAPI()
 {
-	//Creates AI player
-	init();
-}
-
-void OpponentAPI::init()
-{
-	bsAI = {};
 }
 
 OpponentAPI::~OpponentAPI() {}

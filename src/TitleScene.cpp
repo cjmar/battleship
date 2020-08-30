@@ -3,6 +3,8 @@
 #include "Game.h"
 #include <cmath>
 #include <ctime>
+#include "Hitbox.h"
+#include "Colors.h"
 
 TitleScene::TitleScene()
 {
@@ -76,7 +78,7 @@ void TitleScene::update()
 	boatX -= 1;
 	if (boatX < 0 - boats.at(selected).shipSprite.destRect.w)
 	{
-		srand(time(NULL));
+		srand(unsigned int(time(NULL)));
 		selected = rand() % 4;
 		boatX = 20 * 32;
 	}
@@ -100,7 +102,7 @@ void TitleScene::update()
 
 		//Bullet hit the ship
 		//if (inHitBox(shellSprite.destRect.x, shellSprite.destRect.y, boats.at(selected).getHitbox(), Battleship::Game::gameScale))
-		if(inHitBox((shellSprite.destRect.x + 16), (shellSprite.destRect.y+16), boats.at(selected).getDest(), 1) && !shellActive)
+		if(Hitbox::rectClickHit((shellSprite.destRect.x + 16), (shellSprite.destRect.y+16), boats.at(selected).getDest(), 1) && !shellActive)
 		{
 			explosionSprite.destRect.y = boats.at(selected).getDest().y;
 			explosionSprite.destRect.x = shellCoords.x;
@@ -183,15 +185,14 @@ void TitleScene::render()
 	}
 
 	//Button text
-	TextureManager::DrawText("PLAY", Battleship::RED, PLAYbutton.x + 10, PLAYbutton.y + 5, 2);
-	TextureManager::DrawText("EXIT", Battleship::RED, EXITbutton.x + 20, EXITbutton.y + 5, 2);
+	TextureManager::DrawText("PLAY", Colors::RED, PLAYbutton.x + 10, PLAYbutton.y + 5, 2);
+	TextureManager::DrawText("EXIT", Colors::RED, EXITbutton.x + 20, EXITbutton.y + 5, 2);
 
 	//Title text (Sprite)
 	TextureManager::Draw(titleText);
 
 	//Github info 
-	TextureManager::DrawText("https://github.com/cjmar/battleship", Battleship::BLACK, 14 * 32 + 1, 12 * 32 + 1, 0.45);
-
+	TextureManager::DrawText("https://github.com/cjmar/battleship", Colors::BLACK, 14 * 32 + 1, 12 * 32 + 1, 0.45f);
 }
 
 void TitleScene::mouseDown(int, int, int) 
@@ -205,7 +206,7 @@ void TitleScene::mouseUp(int x, int y, int button)
 	for (SDL_Rect s : buttons)
 	{
 		//if (inHitBox(x, y, s, Battleship::Game::gameScale))
-		if (inHitBox(x, y, s, Battleship::Game::gameScale))
+		if (Hitbox::rectClickHit(x, y, s, Battleship::Game::gameScale))
 		{
 			switch (i)
 			{
@@ -222,7 +223,7 @@ void TitleScene::mouseUp(int x, int y, int button)
 		i++;
 	}
 	//Minigame if you click on the water
-	if (inHitBox(x, y, seaArea, Battleship::Game::gameScale) && !shellActive)
+	if (Hitbox::rectClickHit(x, y, seaArea, Battleship::Game::gameScale) && !shellActive)
 	{
 		shellCoords.x = shellSprite.destRect.x = int(x / Battleship::Game::gameScale) - 16; 
 		shellCoords.y = shellSprite.destRect.y = 13 * 32 - 8;

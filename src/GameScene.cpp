@@ -2,16 +2,18 @@
 #include <iostream>
 #include "TextureManager.h"
 #include "Game.h"
+#include "Hitbox.h"
 #include <cmath>
+#include "Colors.h"
 
-GameScene::GameScene(bool AI, OpponentAPI * p2API)
+GameScene::GameScene(bool AI, OpponentAPI* p2API)
 {
 	p2 = p2API;
 	p2Message = "Welcome to Battleship";
 	roundNum = 0;
 	vsAI = true;
 
-	if (!vsAI) p2 = { false };
+	//if (!vsAI) p2 = { false };
 
 	delayTime = 60;
 	delayCurrent = 0;
@@ -71,7 +73,7 @@ void GameScene::init()
 	marksLocked = false;
 	selected = 0;
 
-	if (vsAI) p2->init();
+	//if (vsAI) p2->init();
 }
 
 void GameScene::update()
@@ -100,24 +102,24 @@ void GameScene::render()
 	{
 	case SettingUp:
 		if (!shipsLocked)
-			TextureManager::DrawText("LOCK", Battleship::MANGO, lockButton.destRect.x + 11, lockButton.destRect.y + 7, 1.3);
+			TextureManager::DrawText("LOCK", Colors::MANGO, lockButton.destRect.x + 11, lockButton.destRect.y + 7, 1.3f);
 
 		drawWater();
 		break;
 
 	case OnGoing:
 		if(!marksLocked)
-			TextureManager::DrawText("LOCK", Battleship::MANGO, lockButton.destRect.x + 11, lockButton.destRect.y + 7, 1.3);
+			TextureManager::DrawText("LOCK", Colors::MANGO, lockButton.destRect.x + 11, lockButton.destRect.y + 7, 1.3f);
 
 		if(marksLocked)
-			TextureManager::DrawText("LOCKED", Battleship::MANGO, lockButton.destRect.x + 11, lockButton.destRect.y + 11, 0.9);
+			TextureManager::DrawText("LOCKED", Colors::MANGO, lockButton.destRect.x + 11, lockButton.destRect.y + 11, 0.9f);
 
 		drawPaper();
 		drawMarks();
 		break;
 
 	case PlayAnim:
-		TextureManager::DrawText("LOCKED", Battleship::MANGO, lockButton.destRect.x + 11, lockButton.destRect.y + 11, 0.9);
+		TextureManager::DrawText("LOCKED", Colors::MANGO, lockButton.destRect.x + 11, lockButton.destRect.y + 11, 0.9f);
 		drawWater();
 		firingPhase();
 		break;
@@ -159,7 +161,7 @@ void GameScene::drawUI()
 	drawUIBox(15 * 32, 1 * 32 + 8, 5, 7);
 	drawUIBox(15 * 32, 10 * 32 - 8, 5, 6);
 
-	TextureManager::DrawText(p2Message.c_str(), Battleship::BLACK, 15 * 32 + 12, 1 * 32 + 12, 0.5);
+	TextureManager::DrawText(p2Message.c_str(), Colors::BLACK, 15 * 32 + 12, 1 * 32 + 12, 0.5);
 
 	//draw title
 	TextureManager::Draw(titleText);
@@ -244,7 +246,7 @@ void GameScene::mouseDown(int x, int y, int button)
 void GameScene::mouseUp(int x, int y, int button)
 {
 
-	if (inHitBox(x, y, lockButton.destRect, Battleship::Game::gameScale))
+	if (Hitbox::rectClickHit(x, y, lockButton.destRect, Battleship::Game::gameScale))
 	{
 		lockButtonEvent();
 	}
@@ -283,8 +285,8 @@ void GameScene::mouseMove(int x, int y)
 
 bool GameScene::lockSelectedToGrid(int x, int y) 
 {
-	int xPos = round(x / 32 / Battleship::Game::gameScale) * 32;
-	int yPos = round(y / 32 / Battleship::Game::gameScale) * 32;
+	int xPos = int(round(x / 32 / Battleship::Game::gameScale) * 32);
+	int yPos = int(round(y / 32 / Battleship::Game::gameScale) * 32);
 
 	//Bounds check xPos and yPos
 	if (xPos < seaArea.x || xPos > seaArea.w) xPos = seaArea.x;
@@ -410,7 +412,7 @@ void GameScene::markingPhase()
 					bool collision = false;
 					for (SDL_Rect r : successOffHits)
 					{
-						if (Battleship::Game::rectCollide(nM, r))
+						if (Hitbox::rectCollide(nM, r))
 						{
 							collision = true;
 						}
@@ -461,7 +463,7 @@ void GameScene::firingPhase()
 				{
 					//Unmess the shell 
 					SDL_Rect r2 = {r.x * 32, r.y, 32, 32};
-					if (Battleship::Game::rectCollide(r2, r1)) //Collides with the ship
+					if (Hitbox::rectCollide(r2, r1)) //Collides with the ship
 					{
 						Sprite ex;
 						TextureManager::getSpriteSrc(TextureManager::Explosion, ex);
@@ -577,7 +579,7 @@ void GameScene::setupPhase()
 			if (p2->isReady())
 			{
 				//Display a message based on the other player
-				p2Message = "TEST MESSAGE";
+				p2Message = "Playing vs AI";
 
 				//Change state once other player locked
 				currentState = OnGoing;
@@ -598,7 +600,7 @@ void GameScene::markClickEvent(int x, int y, int button)
 		for (SDL_Rect& m : newMarks)
 		{
 			//See if one of the new marks was clicked on
-			if (inHitBox(x, y, m, Battleship::Game::gameScale))
+			if (Hitbox::rectClickHit(x, y, m, Battleship::Game::gameScale))
 			{
 				markOnMouse = !markOnMouse;
 				selected = i;
@@ -612,7 +614,7 @@ void GameScene::markClickEvent(int x, int y, int button)
 	else //There is a mark on the mouse
 	{
 		//If x, y is in the seaArea
-		if (inHitBox(x, y, seaArea, Battleship::Game::gameScale))
+		if (Hitbox::rectClickHit(x, y, seaArea, Battleship::Game::gameScale))
 		{
 			//Check for a collision with other marks
 			bool collision = false;
@@ -620,37 +622,37 @@ void GameScene::markClickEvent(int x, int y, int button)
 			{
 				SDL_Rect r = m.markDest;
 				//Makes sure the x, y is in an unused place
-				if(inHitBox(x, y, r, Battleship::Game::gameScale))
+				if(Hitbox::rectClickHit(x, y, r, Battleship::Game::gameScale))
 				{
 					collision = true;
 				}
 			}
 			//Check against other new marks being made
-			for (int i = 0; i < newMarks.size(); i++)
+			for (unsigned int i = 0; i < newMarks.size(); i++)
 			{
 				if (i != selected) //dont check it against itself
 				{
 					//Makes sure you clicked on an unused spot on the map
-					if(inHitBox(x, y, newMarks.at(i), Battleship::Game::gameScale))
+					if(Hitbox::rectClickHit(x, y, newMarks.at(i), Battleship::Game::gameScale))
 					{
 						collision = true;
 					}
 					if (!collision)
 					{
 						//Simulate the mark being put down
-						int xPos = floor(x / 32 / Battleship::Game::gameScale) * 32;
-						int yPos = round(y / 32 / Battleship::Game::gameScale) * 32;
+						int xPos = int(floor(x / 32 / Battleship::Game::gameScale) * 32);
+						int yPos = int(round(y / 32 / Battleship::Game::gameScale) * 32);
 
 						SDL_Rect sim = {xPos, yPos, 32, 32};
 
 						//See if the simulated collides with the other new marks
-						if (Battleship::Game::rectCollide(sim, newMarks.at(i)))
+						if (Hitbox::rectCollide(sim, newMarks.at(i)))
 							collision = true;
 
 						//See if the simulated collides with other marks
 						for (SDL_Rect& r : successOffHits)
 						{
-							if (Battleship::Game::rectCollide(sim, r))
+							if (Hitbox::rectCollide(sim, r))
 								collision = true;
 						}
 
@@ -658,12 +660,12 @@ void GameScene::markClickEvent(int x, int y, int button)
 						for (Mark& m : p1.getMarks())
 						{
 							SDL_Rect r = m.markDest;
-							if (Battleship::Game::rectCollide(sim, r))
+							if (Hitbox::rectCollide(sim, r))
 								collision = true;
 						}
 
 						//Make sure the generated coords are within the seaArea
-						if (!Battleship::Game::rectCollide(sim, seaArea))
+						if (!Hitbox::rectCollide(sim, seaArea))
 							collision = true;
 					}
 				}
@@ -672,8 +674,8 @@ void GameScene::markClickEvent(int x, int y, int button)
 			if (!collision)
 			{
 				markOnMouse = !markOnMouse;
-				int xPos = floor(x / 32 / Battleship::Game::gameScale) * 32;
-				int yPos = round(y / 32 / Battleship::Game::gameScale) * 32;
+				int xPos = int(floor(x / 32 / Battleship::Game::gameScale) * 32);
+				int yPos = int(round(y / 32 / Battleship::Game::gameScale) * 32);
 
 				newMarks.at(selected).x = xPos;
 				newMarks.at(selected).y = yPos;
@@ -693,7 +695,7 @@ void GameScene::shipClickEvent(int x, int y, int button)
 		int i = 0;
 		for (Ship& s : p1.getShips())
 		{
-			if (inHitBox(x, y, s.getDest(), Battleship::Game::gameScale))
+			if (Hitbox::rectClickHit(x, y, s.getDest(), Battleship::Game::gameScale))
 			{
 				shipOnMouse = !shipOnMouse;
 				selected = i;
@@ -709,7 +711,7 @@ void GameScene::shipClickEvent(int x, int y, int button)
 		switch (button)
 		{
 		case SDL_BUTTON_LEFT:
-			if (inHitBox(x, y, seaArea, Battleship::Game::gameScale))
+			if (Hitbox::rectClickHit(x, y, seaArea, Battleship::Game::gameScale))
 			{
 				//Lock it to the screen if it doesnt hit another ship
 				if (!p1.shipCollide(selected, true))

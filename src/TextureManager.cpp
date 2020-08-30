@@ -4,6 +4,7 @@
 #include "Game.h"
 
 using namespace Battleship;
+using namespace TextureManager;
 
 SDL_Texture* TextureManager::loadTexture(const char* fileName)
 {
@@ -36,7 +37,7 @@ void TextureManager::DrawText(const char* text, SDL_Color& color, int xPos, int 
 	SDL_Surface* tSurface = TTF_RenderText_Solid(Game::font, text, color);
 	SDL_Texture* tTexture = SDL_CreateTextureFromSurface(Game::renderer, tSurface);
 
-	SDL_Rect dest = { xPos * Game::gameScale, yPos * Game::gameScale, tSurface->w * scale, tSurface->h * scale };
+	SDL_Rect dest = { int(xPos * Game::gameScale), int(yPos * Game::gameScale), int(tSurface->w * scale), int(tSurface->h * scale) };
 	SDL_RenderCopy(Game::renderer, tTexture, NULL, &dest);
 
 	SDL_FreeSurface(tSurface);
